@@ -240,7 +240,7 @@
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    border: 2px solid #ff6600;  /* A bolinha será sempre visível e com a borda laranja */
+    border: 2px solid #ddd;  /* A bolinha será sempre visível e com a borda laranja */
     background-color: white;  /* A bolinha terá fundo branco */
 }
 
@@ -272,4 +272,43 @@
     font-size: 14px;
     color: #333;
     padding-top: 5px;
+}
+
+
+.negrito{
+    font-weight: 600;
+    color: #ff6600;
+}
+
+.bnt-laranja{
+    display: inline-block;
+    text-decoration: none;
+    border: none;
+    color: #FFFFFF;
+    background-color: #ff6600;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 10px 20px;
+    margin-top: 20px;
+    border-radius: 10px;   
+}
+
+.bnt-outline{
+    display: inline-block;
+    text-decoration: none;
+    border: none;
+    color: #000;
+    border: 2px solid #ff6600;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 10px 20px;
+    margin-top: 20px;
+    border-radius: 10px;   
+}
+
+.bloqueado {
+    pointer-events: none; 
+    opacity: 0.6; 
+    user-select: none; 
+    background-color: #D6D3D1;
 }

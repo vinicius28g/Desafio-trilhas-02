@@ -1,12 +1,15 @@
 window.onload= function(){
-    // Seleciona todos os inputs de upload
     const fileInputs = document.querySelectorAll(".file-input");
 
-    fileInputs.forEach(input => {
-        const uploadBox = input.closest(".upload-box");
-        const fileName = uploadBox.querySelector(".file-name");
+    $('#telefone').mask('(00) 00000-0000');
+    $('#cep').mask('00000-000');
+    $('#cpf').mask('000.000.000-00');
 
-        // Atualiza o nome do arquivo quando um arquivo é escolhido
+    fileInputs.forEach(input => {
+        const uploadBox = input.closest(".upload-box"); // Encontra a upload-box correta
+        const fileName = uploadBox.querySelector(".file-name"); // Pega o nome correto
+
+        // Atualiza o nome do arquivo quando o usuário seleciona um arquivo (click)
         input.addEventListener("change", function () {
             if (input.files.length > 0) {
                 fileName.textContent = input.files[0].name;
@@ -30,8 +33,15 @@ window.onload= function(){
             uploadBox.style.background = "white";
 
             const file = e.dataTransfer.files[0];
-            input.files = e.dataTransfer.files;
-            fileName.textContent = file.name;
+
+            // Criar um novo DataTransfer para evitar que outros inputs sejam modificados
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            
+            // Agora o arquivo é inserido apenas no input correto
+            input.files = dataTransfer.files;
+
+            fileName.textContent = file.name; // Atualiza apenas o nome da caixa correta
         });
     });
 
@@ -53,3 +63,97 @@ window.onload= function(){
         });
     });
 };
+
+
+function buscaCep(cep){
+    var cep = cep.value.replace(/\D/g, '');
+    const rua =  $("#rua");
+    const cidade = $("#cidade");
+    const estado = $("#estado");
+
+    if (cep.length === 8) {
+        $.ajax({
+            url: `https://viacep.com.br/ws/${cep}/json/`,
+            type: "GET",
+            dataType: "json",
+            success: function(data) {
+                if (!data.erro) {
+                    console.log(data);
+                    rua.val(data.logradouro);
+                    rua.addClass("bloqueado");
+                    rua.prop("disabled", true);
+
+                    cidade.val(data.localidade);
+                    cidade.prop("disabled", true);
+                    cidade.addClass("bloqueado");
+
+                    estado.val(data.estado);
+                    estado.addClass("bloqueado");
+                    estado.prop("disabled", true);
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Erro!",
+                        text: "CEP não encontrado.",
+                        confirmButtonColor: "#d33"
+                    });
+                    rua.removeClass("bloqueado");
+                    rua.prop("disabled", false);
+
+                    cidade.removeClass("bloqueado");
+                    cidade.prop("disabled", false);
+
+                    estado.removeClass("bloqueado");
+                    estado.prop("disabled", false);
+
+                }
+            },  
+            error: function() {
+                $("#endereco").html("Erro ao buscar o CEP.");
+            }
+        });
+    } else {
+        $("#endereco").html("Digite um CEP válido com 8 dígitos.");
+    }
+
+}
+
+function checkCpf(cpf){
+    if(!validarCPF(cpf)){
+        Swal.fire({
+            icon: "error",
+            title: "Erro!",
+            text: "CPF invalido.",
+            confirmButtonColor: "#d33"
+        });
+    }
+}
+
+function validarCPF(cpf) {
+    cpf = cpf.replace(/\D/g, ''); // Remove caracteres não numéricos
+
+    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
+        return false; // Verifica se tem 11 dígitos e se não são todos iguais
+    }
+
+    let soma = 0, resto;
+
+    // Validação do primeiro dígito
+    for (let i = 0; i < 9; i++) {
+        soma += parseInt(cpf[i]) * (10 - i);
+    }
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf[9])) return false;
+
+    // Validação do segundo dígito
+    soma = 0;
+    for (let i = 0; i < 10; i++) {
+        soma += parseInt(cpf[i]) * (11 - i);
+    }
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf[10])) return false;
+
+    return true;
+}

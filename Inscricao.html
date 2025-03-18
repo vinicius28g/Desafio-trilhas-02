@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>trilhas-Isncricao</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 </head>
 <body>
     <div class="content">
@@ -28,7 +31,7 @@
 
                 <div class="input-group">
                     <label for="cpf" class="label">CPF</label>
-                    <input type="text" id="cpf" name="cpf" class="input obrigatorio" required>
+                    <input type="text" id="cpf" name="cpf" class="input obrigatorio" onblur="checkCpf(this.value)" required>
                 </div>
 
                 <div class="input-group">
@@ -51,18 +54,18 @@
                 </div>
                 <div class="label">Documento de identidade</div>
                 <div class="upload-container">
-                    <label for="file-input" class="upload-box">
-                        <input type="file" id="file-input" class="file-input" hidden required>
+                    <label class="upload-box">
+                        <input type="file" class="file-input" hidden required>
                         <img src="img/simbolo-upload.png" alt="Ícone de upload">
                         <p>Clique aqui para <br> selecionar o arquivo</p>
-                        <span class="file-name"></span>
+                        <span class="file-name">Nenhum arquivo selecionado</span>
                     </label>
                 </div>
 
                 <h2 class="subtitulo-foms">Endereço residencial</h2>
                 <div class="input-group ">
                     <label for="cep" class="label">CEP</label>
-                    <input type="text" id="cep" name="cep" placeholder="00000-000" class="input obrigatorio" required>
+                    <input type="text" id="cep" name="cep" placeholder="00000-000" class="input obrigatorio" required onkeyup="buscaCep(this)">
                 </div>
 
                 <div class="row">
@@ -97,15 +100,15 @@
                 
                 <div class="label">Comprovante de residência</div>
                 <div class="upload-container">
-                    <label for="file-input" class="upload-box">
-                        <input type="file" id="file-input" class="file-input" hidden required>
+                    <label class="upload-box">
+                        <input type="file" class="file-input" hidden required>
                         <img src="img/simbolo-upload.png" alt="Ícone de upload">
                         <p>Clique aqui para <br> selecionar o arquivo</p>
-                        <span class="file-name"></span>
+                        <span class="file-name">Nenhum arquivo selecionado</span>
                     </label>
                 </div>
 
-                <h2 class="subtitulo-foms">Endereço residencial</h2>
+                <h2 class="subtitulo-foms">Trilhas de apredizagem</h2>
                 <div class="input-radios">
                     <label for="radio-front" class="radio-card">
                         <input type="radio" name="option" id="radio-front" value="front-end" class="radio">
@@ -149,8 +152,16 @@
             
                 </div>
             
-              
-                <button type="submit">Inscreva-se</button>
+                
+                <div>
+                    <input type="checkbox" name="termoConcordancia" id="termoComcordancia" value="true" class="radio">
+                    Declaro que li e concordo com os <samp class="negrito"> Termos e Condições</samp> e com a <samp class="negrito">Política de Privacidade.</samp> 
+                </div>
+                <div style="text-align: end;">
+                    <a href="index.html" class="bnt-outline">Cancelar</a>
+                    <button type="submit" name="submit" class="bnt-laranja">Fazer Inscrição</button>
+                </div>
+                
             </form>
         </div>
         <div class="div-img"><img src="img/img-forms.png" alt="pessoa-estudando"></div>
