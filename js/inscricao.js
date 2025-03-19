@@ -91,12 +91,7 @@ function buscaCep(cep){
                     estado.addClass("bloqueado");
                     estado.prop("disabled", true);
                 } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Erro!",
-                        text: "CEP não encontrado.",
-                        confirmButtonColor: "#d33"
-                    });
+                    alertErro("CEP não encontrado")
                     rua.removeClass("bloqueado");
                     rua.prop("disabled", false);
 
@@ -120,13 +115,9 @@ function buscaCep(cep){
 
 function checkCpf(cpf){
     if(!validarCPF(cpf)){
-        Swal.fire({
-            icon: "error",
-            title: "Erro!",
-            text: "CPF invalido.",
-            confirmButtonColor: "#d33"
-        });
+        alertErro("CPF não validado")
     }
+        
 }
 
 function validarCPF(cpf) {
@@ -157,3 +148,25 @@ function validarCPF(cpf) {
 
     return true;
 }
+
+function valiaForms(){
+    const arquivos = document.querySelectorAll('.file-input');
+
+    arquivos.forEach((input, index) => {
+        if(input.files.length <= 0){
+           let text = input.closest('.upload-container').previousElementSibling.innerText;        
+            alertErro(text)
+        }
+    });
+
+}
+
+function alertErro(mensagem){
+    Swal.fire({
+        icon: "error",
+        title: "Erro!",
+        text: mensagem,
+        confirmButtonColor: "#d33"
+    });
+}
+
