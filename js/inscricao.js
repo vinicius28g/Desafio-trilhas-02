@@ -121,15 +121,15 @@ function checkCpf(cpf){
 }
 
 function validarCPF(cpf) {
-    cpf = cpf.replace(/\D/g, ''); // Remove caracteres não numéricos
+    cpf = cpf.replace(/\D/g, '');
 
     if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
-        return false; // Verifica se tem 11 dígitos e se não são todos iguais
+        return false;
     }
 
     let soma = 0, resto;
 
-    // Validação do primeiro dígito
+    
     for (let i = 0; i < 9; i++) {
         soma += parseInt(cpf[i]) * (10 - i);
     }
@@ -137,7 +137,7 @@ function validarCPF(cpf) {
     if (resto === 10 || resto === 11) resto = 0;
     if (resto !== parseInt(cpf[9])) return false;
 
-    // Validação do segundo dígito
+
     soma = 0;
     for (let i = 0; i < 10; i++) {
         soma += parseInt(cpf[i]) * (11 - i);
@@ -149,16 +149,42 @@ function validarCPF(cpf) {
     return true;
 }
 
-function valiaForms(){
+function validaForms(form) {
+    
     const arquivos = document.querySelectorAll('.file-input');
-
-    arquivos.forEach((input, index) => {
-        if(input.files.length <= 0){
-           let text = input.closest('.upload-container').previousElementSibling.innerText;        
-            alertErro(text)
+    
+    for (let input of arquivos) {
+        if (input.files.length <= 0) {
+            console.log("arquivo não selecionado");
+            let text = input.closest('.upload-container').previousElementSibling.innerText;        
+            Swal.fire({
+                icon: "error",
+                title: "Erro!",
+                text: "Adicione " + text,
+                confirmButtonColor: "#d33"
+            });
+            return false; // Impede o envio do formulário
         }
+    }
+
+    
+    Swal.fire({
+        icon: "success",
+        title: "Sucesso!",
+        text: "Formulário enviado com sucesso! aguarde o email de confirmação",
+        confirmButtonColor: "#28a745"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            form.submit();
+            
+            setTimeout(() => {
+                window.location.href = "index.html";
+            }, 2000);
+        }
+        
     });
 
+    return false; 
 }
 
 function alertErro(mensagem){
