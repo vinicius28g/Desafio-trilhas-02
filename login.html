@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
     <title>Desafio-Trilhas</title>
 </head>
 <body>
@@ -25,11 +26,25 @@
             <img src="img/logo-trilhas.png" alt="logo-trilhas" class="logo-trilhas">
         </div>
         <div class="content_texto">
-            <h2>Seja bem-vindo ao Trilhas! Faça a sua inscrição e aproveite o melhor curso de programação, com instrutores maravilhosos e acompanhamento da Alura</h2>
-            <a href="Inscricao.html" class="bnt-inscrevase">Inscreva-se</a>
-            <a href="login.html" class="bnt-login">login</a>
+            <form action="" class="forms-login">
+                <div class="input-group">
+                    <label for="user-name" class="label-login">User name</label>
+                    <input type="text" id="user-name" name="user-name" placeholder="User name" class="input obrigatorio" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="senha" class="label-login">Senha</label>
+                    <div class="input-senha">
+                        <input type="password" id="senha" class="input obrigatorio" placeholder="Digite sua senha" />
+                        <i class="fa-solid fa-eye toggle-olho" onclick="toggleSenha()"></i>
+                    </div>
+                </div>
+                <button type="submit" class="bnt-entra">Entra</button>
+            </form>
+        
         </div>
 
     </div>
+    <script src="js/login.js"></script>
 </body>
 </html>
