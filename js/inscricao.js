@@ -152,6 +152,9 @@ function validarCPF(cpf) {
 function validaForms(form) {
     
     const arquivos = document.querySelectorAll('.file-input');
+    let cpf = document.getElementById('cpf').value;
+
+    checkCpf(cpf);
     
     for (let input of arquivos) {
         if (input.files.length <= 0) {
