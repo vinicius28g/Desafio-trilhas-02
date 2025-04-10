@@ -11,12 +11,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
   
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <script src="js/inscricao.js"></script>
+    <script src="js/inscricaiEdit.js"></script>
 </head>
 <body>
     <div class="content">
         <div class="div-forms">
-            <form x-data="formularioInscricao()" @submit.prevent="enviarFormulario" class="forms" id="form-inscricao" method="POST" enctype="multipart/form-data">
+            <form x-data="formularioInscricaoEdite()" x-init="carregarDados()" @submit.prevent="enviarFormulario" class="forms" id="form-inscricao" method="POST" enctype="multipart/form-data">
                 <div class="cabecalho-forms">
                     <h1>Formulário de inscrição</h1>
                     <p>Preencha os dados abaixo para fazer sua inscrição no Programa Trilhas.</p>
@@ -59,12 +59,7 @@
                 </div>
                 <div class="label">Documento de identidade</div>
                 <div class="upload-container">
-                    <label class="upload-box">
-                        <input type="file" class="file-input" name="documetno-identidade" @change="documetnoIdentidade = $event.target.files[0]" hidden>
-                        <img src="img/simbolo-upload.png" alt="Ícone de upload">
-                        <p>Clique aqui para <br> selecionar o arquivo</p>
-                        <span class="file-name">Nenhum arquivo selecionado</span>
-                    </label>
+                    <iframe id="preview-identidade" style="width: 100%; height: 500px;"></iframe>
                 </div>
 
                 <h2 class="subtitulo-foms">Endereço residencial</h2>
@@ -106,17 +101,14 @@
                 <div class="label">Comprovante de residência</div>
                 <div class="upload-container">
                     <label class="upload-box">
-                        <input  type="file" class="file-input" name="comprovante-residencia" hidden  @change="comprovanteResidencia = $event.target.files[0]">
-                        <img src="img/simbolo-upload.png" alt="Ícone de upload">
-                        <p>Clique aqui para <br> selecionar o arquivo</p>
-                        <span class="file-name">Nenhum arquivo selecionado</span>
+                        <iframe id="preview-compResidencia" style="width: 100%; height: 500px;"></iframe>
                     </label>
                 </div>
 
                 <h2 class="subtitulo-foms">Trilhas de aprendizagem</h2>
                 <div class="input-radios">
                     <label for="radio-front" class="radio-card">
-                        <input x-model="trilha"  type="radio" name="trilha" id="radio-front" value="1" class="radio">
+                        <input x-model="trilha"  type="radio" name="trilha" id="radio-front" value="front-end" class="radio">
                         <div class="content-radio">
                            <img src="img/icone-font-end.png" alt="icone-front-end" class="icon-trilhas">
                            <h3 class="text-radio">Programação Front-end</h3>
@@ -124,7 +116,7 @@
                     </label>
             
                     <label for="radio-back" class="radio-card">
-                        <input x-model="trilha"  type="radio" name="trilha" id="radio-back" value="2" class="radio">
+                        <input x-model="trilha"  type="radio" name="trilha" id="radio-back" value="back-end" class="radio">
                         <div class="content-radio">
                            <img src="img/icone-back-end.png" alt="icone-back-end" class="icon-trilhas">
                            <h3 class="text-radio">Programação Back-end</h3>
@@ -132,7 +124,7 @@
                     </label>
             
                     <label for="radio-jogos" class="radio-card">
-                        <input x-model="trilha" type="radio" name="trilha" id="radio-jogos" value="3" class="radio">
+                        <input x-model="trilha" type="radio" name="trilha" id="radio-jogos" value="jogos" class="radio">
                         <div class="content-radio">
                            <img src="img/icone-jogos.png" alt="icone-jogos" class="icon-trilhas" >
                             <h3 class="text-radio">Programação de Jogos</h3>
@@ -140,7 +132,7 @@
                     </label>
             
                     <label for="radio-design" class="radio-card">
-                        <input x-model="trilha"  type="radio" name="trilha" id="radio-design" value="4" class="radio">
+                        <input x-model="trilha"  type="radio" name="trilha" id="radio-design" value="design" class="radio">
                         <div class="content-radio">
                            <img src="img/icone-unix.png" alt="icone-unix" class="icon-trilhas">
                            <h3 class="text-radio">Design e Experiência</h3>
@@ -148,7 +140,7 @@
                     </label>
             
                     <label for="radio-dados" class="radio-card">
-                        <input x-model="trilha"  type="radio" name="trilha" id="radio-dados" value="5" class="radio">
+                        <input x-model="trilha"  type="radio" name="trilha" id="radio-dados" value="dados" class="radio">
                         <div class="content-radio">
                            <img src="img/icone-dados.png" alt="icone-dados" class="icon-trilhas">
                            <h3 class="text-radio">Ciência de Dados</h3>
@@ -162,34 +154,7 @@
                     <label for="user-name" class="label">Usuário</label>
                     <input x-model="userName"  type="text" id="user-name" name="user-name" placeholder="user name" class="input obrigatorio" required title="identificação de usuario, pode ser um email ou algo que lembre você lembre">
                 </div>
-                <div class="input-group" x-data="{ mostrarSenha: false }">
-                    <label for="senha" class="label">Senha</label>
-                    <div class="input-senha">
-                        <input :type="mostrarSenha ? 'text' : 'password'" id="senha" x-model="password" class="input obrigatorio" placeholder="Digite sua senha" required>
-                        <i class="fa-solid toggle-olho"
-                           :class="mostrarSenha ? 'fa-eye-slash' : 'fa-eye'"
-                           @click="mostrarSenha = !mostrarSenha"></i>
-                    </div>
-                    <small class="info">Sua senha deve ter pelo menos 8 caracteres</small>
-                </div>
-                <div class="input-group" x-data="{ mostrarSenha: false, password: '' }">
-                    <label for="confirma-senha" class="label">Confirmar Senha</label>
-                    <div class="input-senha">
-                        <input :type="mostrarSenha ? 'text' : 'password'" id="confirma-senha" x-model="confirmadPassword" class="input obrigatorio" placeholder="Digite sua senha" required>
-                        <i class="fa-solid toggle-olho"
-                        :class="mostrarSenha ? 'fa-eye-slash' : 'fa-eye'"
-                        @click="mostrarSenha = !mostrarSenha"></i>
-                    </div>
-                </div>
                 
-                <div>
-                    <input x-model="termoConcordancia" type="checkbox" name="termoConcordancia" id="termoComcordancia" value="true" required>
-                    Declaro que li e concordo com os <samp class="negrito"> Termos e Condições</samp> e com a <samp class="negrito">Política de Privacidade.</samp> 
-                </div>
-                <div style="text-align: end;">
-                    <a href="index.html" class="bnt-outline">Cancelar</a>
-                    <button type="submit" name="submit" class="bnt-laranja">Fazer Inscrição</button>
-                </div>
                 
             </form>
         </div>

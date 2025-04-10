@@ -155,39 +155,21 @@ function validaForms(form) {
     let cpf = document.getElementById('cpf').value;
 
     checkCpf(cpf);
-    
+   
     for (let input of arquivos) {
+        
         if (input.files.length <= 0) {
             console.log("arquivo não selecionado");
-            let text = input.closest('.upload-container').previousElementSibling.innerText;        
-            Swal.fire({
-                icon: "error",
-                title: "Erro!",
-                text: "Adicione " + text,
-                confirmButtonColor: "#d33"
-            });
-            return false; // Impede o envio do formulário
+            let text = input.closest('.upload-container').previousElementSibling.innerText;   
+            alertErro("Adicione " + text);     
+           
+          
         }
     }
 
     
-    Swal.fire({
-        icon: "success",
-        title: "Sucesso!",
-        text: "Formulário enviado com sucesso! aguarde o email de confirmação",
-        confirmButtonColor: "#28a745"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            form.submit();
-            
-            setTimeout(() => {
-                window.location.href = "index.html";
-            }, 2000);
-        }
-        
-    });
+   
 
-    return false; 
 }
 
 function alertErro(mensagem){
@@ -197,6 +179,167 @@ function alertErro(mensagem){
         text: mensagem,
         confirmButtonColor: "#d33"
     });
+    throw new Error(mensagem);
+}
+
+function converterArquivoParaBase64(arquivo, callback) {
+    debugger
+    const reader = new FileReader();
+    reader.onload = () => callback(reader.result);
+    reader.readAsDataURL(arquivo);
+}
+
+function formularioInscricao() {
+    
+
+    return {
+        nome: '',
+        email: '',
+        telefone: '',
+        cpf: '',
+        sexo: '',
+        dataNascimento: '',
+        cep: '',
+        rua: '',
+        numero: '',
+        cidade: '',
+        estado: '',
+        trilha: '',
+        password: '',
+        confirmadPassword: '',
+        userName: '',
+        termoConcordancia: false,
+        documetnoIdentidade: null,
+        comprovanteResidencia: null,
+        enviarFormulario() {
+            try {
+                const forms = document.querySelector('#form-inscricao');
+                validaForms(forms);
+                
+                if (this.password !== this.confirmadPassword) {
+                    alertErro("Senhas não conferem");
+                    return;
+                }
+
+                if (this.password.length < 8) {
+                    alertErro("Senha deve ter no mínimo 8 caracteres");
+                    return;
+                }
+                debugger
+;                if (this.documetnoIdentidade) {
+                    converterArquivoParaBase64(this.documetnoIdentidade, (base64) => {
+                        sessionStorage.setItem('documentoIdentidade', base64);
+                    });
+                }
+                
+                if (this.comprovanteResidencia) {
+                    converterArquivoParaBase64(this.comprovanteResidencia, (base64) => {
+                        sessionStorage.setItem('comprovanteResidencia', base64);
+                    });
+                }
+
+            }catch (error) {
+                console.log(error.message);
+            }
+
+            const payload = {
+                id: null,
+                login: this.userName,
+                pass: this.password,
+                role: -1, // n ão é necessário no cadastro esse metodo so cadastro participante
+                trilhaId: this.trilha,
+                pessoa: {
+                    nome: this.nome,
+                    email: this.email,
+                    telefone: this.telefone,
+                    cpf: this.cpf,
+                    sexo: this.sexo,
+                    dataNascimento: this.dataNascimento
+                },
+                endereco: {
+                    cep: this.cep,
+                    rua: this.rua,
+                    numero: this.numero,
+                    cidade: this.cidade,
+                    estado: this.estado
+                }
+            };
+
+            console.log(JSON.stringify(payload));
+
+           
+          
+            fetch('http://localhost:8080/auth/registro/Participante', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(async response => {
+                const text = await response.text();
+                let data;
+            
+                try {
+                    data = text ? JSON.parse(text) : {};
+                } catch (e) {
+                    throw new Error("Resposta não é um JSON válido");
+                }
+            
+                if (response.status === 201) {
+                    console.log( this.userName)
+                    console.log( this.password)
+                    const response = await fetch('http://localhost:8080/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        login: this.userName,
+                        pass: this.password
+                    })
+                    });
+            
+                    if (!response.ok) {
+                        // Tenta extrair o JSON de erro vindo do backend
+                        const errorData = await response.json();
+                        throw new Error(errorData.erro || 'erro na reqisição de login');
+                    }
+            
+                    const data = await response.json();
+            
+                    sessionStorage.setItem('token', data.token);
+                    sessionStorage.setItem('user', data.login);
+                    sessionStorage.setItem('role', data.role);
+
+                    Swal.fire({
+                        icon: "success",
+                        title: "Sucesso!",
+                        text: "Formulário enviado com sucesso! Aguarde o email de confirmação.",
+                        confirmButtonColor: "#28a745"
+                    }).then(() => {
+                        // redirecionamento se quiser
+                        window.location.href = '/Inscricao_eicao.html';
+                    });
+                } else {
+                    // 👇 tenta pegar "erro" OU "message" OU usa fallback
+                    const errorMsg = data.erro || data.message || "Erro desconhecido na requisição.";
+                    throw new Error(errorMsg);
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Erro ao enviar inscrição",
+                    text: error.message,
+                    confirmButtonColor: "#dc3545"
+                });
+            });
+            
+        }
+
+        
+    }
 }
 
 

@@ -44,7 +44,7 @@ document.addEventListener('alpine:init', () => {
         sessionStorage.setItem('user', data.login);
         sessionStorage.setItem('role', data.role);
 
-        window.location.href = '/Inscricao.html'; // redireciona para o painel, ajuste conforme necessário
+        window.location.href = '/Inscricao_eicao.html'; // redireciona para o painel, ajuste conforme necessário
       } catch (error) {
         this.erro = error.message;
       }
