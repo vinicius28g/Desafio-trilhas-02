@@ -9,7 +9,7 @@ Esta aplicação funciona como uma banca de editais, inicialmente adaptada exclu
 
 Esta aplicação é apenas o **frontend**, portanto, para funcionar corretamente, é necessário também clonar e configurar o repositório do **backend**.
 
-1. Clone o repositório do backend e siga as instruções de instalação.
+1. Clone o repositório do backend e siga as instruções de instalação. https://github.com/vinicius28g/gabaritaAi
 2. Ajuste os domínios das URLs nas requisições do frontend, pois todas estão configuradas como `localhost`.
    - Se for rodar o backend em outro ambiente (como um servidor), você precisará definir o IP correto nas chamadas da API.
 
